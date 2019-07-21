@@ -9,7 +9,8 @@ namespace ExercInOutArquivo.Entities
     class IOCsv
     {
         //Auto-Properties
-        public string SourcePath { get; set; }
+        public string SourcePath { get; private set; }
+        public List<string> Produtos { get; private set; } = new List<string>();
 
         //Construtores
         public IOCsv() { }
@@ -18,6 +19,7 @@ namespace ExercInOutArquivo.Entities
         {
             SourcePath = caminho;
             ExibirArquivoEntrada(SourcePath);
+            ExibirArquivoSaida();
         }
 
         //Metodos da Classe IOCsv
@@ -48,17 +50,29 @@ namespace ExercInOutArquivo.Entities
                     while (!sr.EndOfStream)
                     {
                         string[] linhasSeparadas = sr.ReadLine().Split(',');
-                        EscreverArquivo(linhasSeparadas[0], linhasSeparadas[1], linhasSeparadas[2]);
+                        RecuperarDados(linhasSeparadas[0], linhasSeparadas[1], linhasSeparadas[2]);
                     }
                 }
             }
         }
 
-        public void EscreverArquivo(string s1, string s2, string s3)
+        public void RecuperarDados(string s1, string s2, string s3)
         {
-            string produto = s1;
+            string produtos = s1;
             double valorTotal = double.Parse(s2) * int.Parse(s3);
-            Console.WriteLine(produto + " - R$" + valorTotal.ToString("f2", CultureInfo.InvariantCulture));
+            string dados = produtos + " - R$" + valorTotal.ToString("f2", CultureInfo.InvariantCulture);
+            Produtos.Add(dados);
+        }
+
+
+        public void ExibirArquivoSaida()
+        {
+            Console.WriteLine("--------------------------------OUT--------------------------------");
+            foreach (string produto in Produtos)
+            {
+                Console.WriteLine(produto);
+            }
+            Console.WriteLine("-------------------------------------------------------------------");
         }
     }
 }
