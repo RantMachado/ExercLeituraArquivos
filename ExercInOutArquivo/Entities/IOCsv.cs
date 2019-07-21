@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.IO;
+using System.Globalization;
 
 namespace ExercInOutArquivo.Entities
 {
@@ -16,31 +17,48 @@ namespace ExercInOutArquivo.Entities
         public IOCsv(string caminho)
         {
             SourcePath = caminho;
-            LerArquivo(SourcePath);
+            ExibirArquivoEntrada(SourcePath);
         }
 
         //Metodos da Classe IOCsv
+        public void ExibirArquivoEntrada(string entrada)
+        {
+            using (FileStream fs = new FileStream(entrada, FileMode.Open))
+            {
+                using (StreamReader sr = new StreamReader(fs))
+                {
+                    Console.WriteLine("--------------------------------INPUT--------------------------------");
+                    while (!sr.EndOfStream)
+                    {
+                        string linhas = sr.ReadLine();
+                        Console.WriteLine(linhas);
+                    }
+                    Console.WriteLine("---------------------------------------------------------------------\n");
+                }
+            }
+            LerArquivo(entrada);
+        }
+
         public void LerArquivo(string path)
         {
             using (FileStream fs = new FileStream(path, FileMode.Open))
             {
                 using (StreamReader sr = new StreamReader(fs))
                 {
-                    Console.WriteLine("------------------------------INPUT------------------------------");
                     while (!sr.EndOfStream)
                     {
-                        string[] linhasSeparadas = sr.ReadLine().Split(';');
-                        foreach (string linhas in linhasSeparadas)
-                        {
-                            Console.WriteLine(linhas);
-                        }
+                        string[] linhasSeparadas = sr.ReadLine().Split(',');
+                        EscreverArquivo(linhasSeparadas[0], linhasSeparadas[1], linhasSeparadas[2]);
                     }
-                    Console.WriteLine("-----------------------------------------------------------------");
                 }
             }
         }
 
-
-        
+        public void EscreverArquivo(string s1, string s2, string s3)
+        {
+            string produto = s1;
+            double valorTotal = double.Parse(s2) * int.Parse(s3);
+            Console.WriteLine(produto + " - R$" + valorTotal.ToString("f2", CultureInfo.InvariantCulture));
+        }
     }
 }
