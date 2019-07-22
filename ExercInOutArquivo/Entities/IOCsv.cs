@@ -11,6 +11,7 @@ namespace ExercInOutArquivo.Entities
         //Auto-Properties
         public string SourcePath { get; private set; }
         public List<string> Produtos { get; private set; } = new List<string>();
+        public string TargetPath { get; private set; }
 
         //Construtores
         public IOCsv() { }
@@ -19,7 +20,8 @@ namespace ExercInOutArquivo.Entities
         {
             SourcePath = caminho;
             ExibirArquivoEntrada(SourcePath);
-            ExibirArquivoSaida();
+            EscreverArquivo(Produtos);
+
         }
 
         //Metodos da Classe IOCsv
@@ -29,16 +31,18 @@ namespace ExercInOutArquivo.Entities
             {
                 using (StreamReader sr = new StreamReader(fs))
                 {
-                    Console.WriteLine("--------------------------------INPUT--------------------------------");
+                    Console.WriteLine("--------------------------------INPUT ARQUIVOS--------------------------------");
                     while (!sr.EndOfStream)
                     {
                         string linhas = sr.ReadLine();
                         Console.WriteLine(linhas);
                     }
-                    Console.WriteLine("---------------------------------------------------------------------\n");
+                    Console.WriteLine("\nCaminho de origem: " + Path.GetFullPath(SourcePath));
+                    Console.WriteLine("------------------------------------------------------------------------------\n");
                 }
             }
             LerArquivo(entrada);
+            NovoCaminho(SourcePath);
         }
 
         public void LerArquivo(string path)
@@ -64,15 +68,43 @@ namespace ExercInOutArquivo.Entities
             Produtos.Add(dados);
         }
 
-
-        public void ExibirArquivoSaida()
+        //new
+        public void NovoCaminho(string caminhoOrigem)
         {
-            Console.WriteLine("--------------------------------OUT--------------------------------");
+            string origem = Path.GetDirectoryName(SourcePath);
+            string destino = @"Out\";
+            TargetPath = Path.Combine(origem,destino);
+            Directory.CreateDirectory(TargetPath);
+        }
+
+        //new
+        public void EscreverArquivo(List<string> produtos)
+        {
+            string[] celulas = File.ReadAllLines(SourcePath);
+            string nomeArquivoSaida = "OUTPUT.csv";
+            TargetPath = TargetPath + nomeArquivoSaida;
+
+            using (StreamWriter sw = File.AppendText(TargetPath))
+            {
+                foreach (string produto in produtos)
+                {
+                    sw.WriteLine(produto);
+                }
+            }
+            ExibirArquivoSaida(TargetPath);
+        }
+
+        public void ExibirArquivoSaida(string saida)
+        {
+
+            Console.WriteLine("--------------------------------OUTPUT ARQUIVOS-------------------------------");
             foreach (string produto in Produtos)
             {
                 Console.WriteLine(produto);
             }
-            Console.WriteLine("-------------------------------------------------------------------");
+
+            Console.WriteLine("\nDados salvos em: " + saida);
+            Console.WriteLine("------------------------------------------------------------------------------");
         }
     }
 }
