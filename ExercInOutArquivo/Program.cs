@@ -9,7 +9,7 @@ namespace ExercInOutArquivo
         {
             try
             {
-                IOCsv arquivo = new IOCsv(@"C:\temp\MyFolder\Arquivo\INPUT.csv");
+                IOCsv arquivo = new IOCsv(args[0]);
             }
             catch (Exception e)
             {
